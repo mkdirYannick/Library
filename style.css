@@ -1,0 +1,20 @@
+h1 {
+    color: goldenrod;
+}
+
+#form, #addNewBook, #clear, #display {
+    margin-top: 16px;
+}
+
+table, th, td {
+    margin: 32px 0px;
+    padding: 8px;
+    border: 1px solid black;
+    border-collapse: collapse;
+    align-content: center;
+    text-align: center;
+}
+
+.deleteBtn {
+    
+}

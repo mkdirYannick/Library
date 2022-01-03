@@ -1,5 +1,7 @@
 const addNewBtn = document.getElementById('addNewBook');
 const form = document.getElementById('form');
+const updateBtn = document.getElementById('update');
+const tbody = document.getElementById('tableBody');
 
 let myLibrary = [];
 
@@ -32,11 +34,11 @@ function addNewBook() {
     confirm.textContent = 'Confirm';
     form.appendChild(confirm);
     confirm.addEventListener('click', function () {
-        let book1 = new Book(title.value, author.value, numberOfPages.value, read.value);
-        addBookToLibrary(book1);
+        let book = new Book(title.value, author.value, numberOfPages.value, read.value);
+        addBookToLibrary(book);
+        updateTable();
     });
 }
-
 
 function addNewTitle() {
     let p = document.createElement('p');
@@ -67,8 +69,10 @@ function addNumberOfPages() {
 
 function addRead() {
     let p = document.createElement('p');
-    p.textContent = 'Did you read the book yet? ';
+    p.textContent = 'Have you read the book? ';
     let read = document.createElement('input');
+    read.type = 'checkbox';
+    read.name = 'read';
     read.id = 'read';
     form.appendChild(p);
     form.appendChild(read);
@@ -76,100 +80,80 @@ function addRead() {
 
 addNewBtn.addEventListener('click', addNewBook);
 
-
-
-const loopBtn = document.getElementById('loop');
-
-loopBtn.onclick = function() {
-    for (let i = 0; i < myLibrary.length; i++) {
-        console.table(myLibrary[i]);
-    }
+for (let i = 0; i < myLibrary.length; i++) {
+    let row_i = document.createElement('tr');
+    let row_i_data_1 = document.createElement('td');
+    row_i_data_1.innerHTML = myLibrary[i].title;
+    let row_i_data_2 = document.createElement('td');
+    row_i_data_2.innerHTML = myLibrary[i].author;
+    let row_i_data_3 = document.createElement('td');
+    row_i_data_3.innerHTML = myLibrary[i].numberOfPages;
+    let row_i_data_4 = document.createElement('td');
+    let row_i_data_4_btn = document.createElement('button');
+    row_i_data_4_btn.textContent = myLibrary[i].read;
+    row_i_data_4.appendChild(row_i_data_4_btn);
+    let row_i_data_5 = document.createElement('td');
+    let row_i_data_5_btn = document.createElement('button');
+    row_i_data_5_btn.textContent = 'Delete';
+    row_i_data_5_btn.className = 'deleteBtn';
+    row_i_data_5_btn.dataset.deleteId = `${i}`;
+    row_i_data_5_btn.addEventListener('click', function() {
+        row_i.innerHTML = '';
+        myLibrary.splice(i, 1);
+    });
+    row_i_data_5.appendChild(row_i_data_5_btn);
+    row_i.appendChild(row_i_data_1);
+    row_i.appendChild(row_i_data_2);
+    row_i.appendChild(row_i_data_3);
+    row_i.appendChild(row_i_data_4);
+    row_i.appendChild(row_i_data_5);
+    tbody.appendChild(row_i);
 }
 
-const clear = document.getElementById('clear');
-
-clear.onclick = function() {
-    form.innerHTML = '';
-}
-
-const display = document.getElementById('display');
-
-display.onclick = function() {
-    // Create the table:
-    let table = document.createElement('table');
-    table.id = 'table';
-    let thead = document.createElement('thead');
-    let tbody = document.createElement('tbody');
-    table.appendChild(thead);
-    table.appendChild(tbody);
-    // Create the heading:
-    let firstRow = document.createElement('tr');
-    let heading_1 = document.createElement('th');
-    heading_1.innerHTML = 'Title';
-    let heading_2 = document.createElement('th');
-    heading_2.innerHTML = 'Author';
-    let heading_3 = document.createElement('th');
-    heading_3.innerHTML = 'Number of pages';
-    let heading_4 = document.createElement('th');
-    heading_4.innerHTML = 'Read';
-    let heading_5 = document.createElement('th');
-    heading_5.innerHTML = 'Delete';
-    firstRow.appendChild(heading_1);
-    firstRow.appendChild(heading_2);
-    firstRow.appendChild(heading_3);
-    firstRow.appendChild(heading_4);
-    firstRow.appendChild(heading_5);
-    thead.appendChild(firstRow);
-    // Automatically create and fill in the rows for each book:
-        for (let i = 0; i < myLibrary.length; i++) {
-            let row_i = document.createElement('tr');
-            let row_i_data_1 = document.createElement('td');
-            row_i_data_1.innerHTML = myLibrary[i].title;
-            let row_i_data_2 = document.createElement('td');
-            row_i_data_2.innerHTML = myLibrary[i].author;
-            let row_i_data_3 = document.createElement('td');
-            row_i_data_3.innerHTML = myLibrary[i].numberOfPages;
-            let row_i_data_4 = document.createElement('td');
-            row_i_data_4.innerHTML = myLibrary[i].read;
-            let row_i_data_5 = document.createElement('td');
-            let row_i_data_5_btn = document.createElement('button');
-            row_i_data_5_btn.textContent = 'Delete';
-            row_i_data_5_btn.className = 'deleteBtn';
-            row_i_data_5_btn.dataset.deleteId = `${i}`;
-            row_i_data_5.appendChild(row_i_data_5_btn);
-            row_i.appendChild(row_i_data_1);
-            row_i.appendChild(row_i_data_2);
-            row_i.appendChild(row_i_data_3);
-            row_i.appendChild(row_i_data_4);
-            row_i.appendChild(row_i_data_5);
-            tbody.appendChild(row_i);
+function updateTable() {
+        let row_i = document.createElement('tr');
+        let row_i_data_1 = document.createElement('td');
+        row_i_data_1.innerHTML = title.value;
+        let row_i_data_2 = document.createElement('td');
+        row_i_data_2.innerHTML = author.value;
+        let row_i_data_3 = document.createElement('td');
+        row_i_data_3.innerHTML = numberOfPages.value;
+        let row_i_data_4 = document.createElement('td');
+        let row_i_data_4_btn = document.createElement('button');
+        row_i_data_4_btn.dataset.readId = `${myLibrary.length-1}`;
+        if (read.checked) {
+            row_i_data_4_btn.innerText = 'Read';
+            myLibrary[row_i_data_4_btn.dataset.readId].read = true;
+        } else {
+            row_i_data_4_btn.innerText = 'Not read';
+            myLibrary[row_i_data_4_btn.dataset.readId].read = false;
         }
-    form.appendChild(table);
+        row_i_data_4_btn.addEventListener('click', function() {
+            if (myLibrary[row_i_data_4_btn.dataset.readId].read == true) {
+                myLibrary[row_i_data_4_btn.dataset.readId].read = false;
+                row_i_data_4_btn.innerText = 'Not read';
+            } else {
+                
+                myLibrary[row_i_data_4_btn.dataset.readId].read = true;
+                row_i_data_4_btn.innerText = 'Read';
+            }
+        });
+        row_i_data_4.appendChild(row_i_data_4_btn);
+        let row_i_data_5 = document.createElement('td');
+        let row_i_data_5_btn = document.createElement('button');
+        row_i_data_5_btn.textContent = 'Delete';
+        // row_i_data_5_btn.className = 'deleteBtn';
+        row_i_data_5_btn.dataset.deleteId = `${myLibrary.length-1}`;
+        row_i_data_5_btn.addEventListener('click', function() {
+            row_i.innerHTML = '';
+            myLibrary.splice(this.dataset.deleteId, 1);
+            // console.log(this.dataset.deleteId);
+        });
+        row_i_data_5.appendChild(row_i_data_5_btn);
+        row_i.appendChild(row_i_data_1);
+        row_i.appendChild(row_i_data_2);
+        row_i.appendChild(row_i_data_3);
+        row_i.appendChild(row_i_data_4);
+        row_i.appendChild(row_i_data_5);
+        tbody.appendChild(row_i);
 }
-
-
-// let table = document.createElement('table');
-// table.id = 'table';
-// let thead = document.createElement('thead');
-// let tbody = document.createElement('tbody');
-// table.appendChild(thead);
-// table.appendChild(tbody);
-// // Create the heading:
-// let firstRow = document.createElement('tr');
-// let heading_1 = document.createElement('th');
-// heading_1.innerHTML = 'Title';
-// let heading_2 = document.createElement('th');
-// heading_2.innerHTML = 'Author';
-// let heading_3 = document.createElement('th');
-// heading_3.innerHTML = 'Number of pages';
-// let heading_4 = document.createElement('th');
-// heading_4.innerHTML = 'Read';
-// let heading_5 = document.createElement('th');
-// heading_5.innerHTML = 'Delete';
-// firstRow.appendChild(heading_1);
-// firstRow.appendChild(heading_2);
-// firstRow.appendChild(heading_3);
-// firstRow.appendChild(heading_4);
-// firstRow.appendChild(heading_5);
-// thead.appendChild(firstRow);
-// form.appendChild(table);
